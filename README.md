@@ -1,260 +1,254 @@
-**Assignment Document: Health & Wellness Planner Agent using OpenAI Agents SDK**
+# Health & Wellness Planner Agent
 
----
+A sophisticated AI-powered health and wellness planning system built with OpenAI Agents SDK that provides personalized fitness and nutrition guidance through natural language conversation.
 
-## 🔹 Overview
+## 🌟 Features
 
-This assignment challenges you to build a fully functional AI-powered **Health & Wellness Planner Agent** using the OpenAI Agents SDK. The goal is to simulate a digital wellness assistant that can interact with users in natural language, understand their goals, and provide personalized suggestions and feedback.
+### Core Capabilities
+- **Natural Language Interaction**: Chat with the agent using everyday language
+- **Goal Analysis**: Automatically extract and structure fitness goals from user input
+- **Personalized Meal Planning**: Generate 7-day meal plans based on dietary preferences
+- **Workout Recommendations**: Create customized workout plans based on fitness level and goals
+- **Progress Tracking**: Monitor and log your health journey progress
+- **Real-time Streaming**: Experience smooth, chatbot-like interactions with streaming responses
 
-The planner agent should:
+### Specialized Agent Handoffs
+- **Nutrition Expert Agent**: Handles complex dietary needs (diabetes, allergies, etc.)
+- **Injury Support Agent**: Provides injury-specific workout modifications
+- **Escalation Agent**: Connects users to human coaches when needed
 
-* **Collect user fitness and dietary goals** through multi-turn natural language conversation.
+### Advanced Features
+- **Input/Output Guardrails**: Ensures data validation and structured responses
+- **Context Management**: Maintains conversation history and user preferences
+- **Lifecycle Hooks**: Comprehensive logging and monitoring
+- **State Persistence**: Remembers user goals and progress across sessions
 
-* **Analyze those goals** and generate structured health plans (e.g., a 7-day vegetarian meal plan or a weekly strength training workout plan).
+## 🚀 Quick Start
 
-* **Use context and state** to remember past conversations and progress.
+### Prerequisites
+- Python 3.12 or higher
+- OpenAI API key
 
-* **Stream responses** to users in real time for an engaging, chatbot-like experience.
+### Installation
 
-* **Apply input and output guardrails** to ensure user input is valid and tool output is structured and trustworthy.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd health-wellness-planner-agent
+   ```
 
-* **Handle handoffs** to other specialized agents such as a Nutrition Expert or Injury Support Assistant based on user needs.
+2. **Install dependencies**
+   ```bash
+   pip install -e .
+   ```
+   or using uv (recommended):
+   ```bash
+   uv sync
+   ```
 
-* **(Optionally) Use lifecycle hooks** to track tool usage, logging, and handoff activities.
+3. **Set up environment variables**
+   Create a `.env` file in the project root:
+   ```env
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
 
-This assignment is designed to mimic a real-world, user-facing AI system that must manage dynamic user inputs, multi-step workflows, and structured decision-making while maintaining smooth, real-time interaction.
+4. **Run the application**
+   ```bash
+   python src/main.py
+   ```
 
----
+## 💬 Usage Examples
 
-## 💪 Project Objective
+### Basic Interaction
+```
+User: I want to lose 5kg in 2 months
+Agent: I'll help you create a plan to lose 5kg in 2 months. Let me analyze your goal...
 
-* Understand user health goals
+User: I'm vegetarian
+Agent: Perfect! I'll create a vegetarian meal plan for you. Here's your 7-day meal plan...
+```
 
-* Generate personalized meal and workout plans
+### Specialized Support
+```
+User: I have knee pain from running
+Agent: I understand you're dealing with knee pain. Let me connect you with our injury support specialist...
 
-* Track progress and schedule reminders
+User: I'm diabetic and need help with meal planning
+Agent: I'll hand you over to our nutrition expert who specializes in diabetic meal planning...
+```
 
-* Provide real-time interaction via streaming
+## 🏗️ Project Structure
 
-* Delegate to specialized agents when needed
+```
+health-wellness-planner-agent/
+├── src/
+│   ├── main.py                 # Main application entry point
+│   ├── agent.py               # Agent wrapper and streaming logic
+│   ├── context.py             # Data models and user session context
+│   ├── config.py              # Configuration settings
+│   ├── hooks.py               # Lifecycle hooks for logging
+│   ├── my_agents/             # Specialized agent implementations
+│   │   ├── main_agent.py      # Primary health planner agent
+│   │   ├── nutrition_expert_agent.py
+│   │   ├── injury_support_agent.py
+│   │   └── escalation_agent.py
+│   ├── tools/                 # Agent tools for specific tasks
+│   │   ├── goal_analyzer.py   # Goal extraction and validation
+│   │   ├── meal_planner.py    # Meal plan generation
+│   │   ├── workout_recommender.py
+│   │   ├── tracker.py         # Progress tracking
+│   │   ├── scheduler.py       # Check-in scheduling
+│   │   └── escalator.py       # Handoff management
+│   └── guardrails/            # Input/output validation
+│       ├── health_guardrail.py
+│       ├── nutrition_guardrail.py
+│       ├── injury_guardrail.py
+│       └── goal_analyzer_guardrail.py
+├── pyproject.toml             # Project dependencies and metadata
+└── README.md                  # This file
+```
 
----
+## 🔧 Technical Architecture
 
-## ✅ SDK Features Overview
+### Core Components
 
-| Feature | Requirement |
-| :---- | :---- |
-| Agent \+ Tool Creation | ✅ Required |
-| State Management | ✅ Required |
-| Guardrails (Input/Output) | ✅ Required |
-| Real-Time Streaming | ✅ Required |
-| Handoff to Another Agent | ✅ Required |
-| Lifecycle Hooks | ✅ Optional |
+#### 1. **Main Agent** (`src/my_agents/main_agent.py`)
+- Primary conversation handler
+- Orchestrates tool usage and agent handoffs
+- Manages user session context
 
----
+#### 2. **Tools** (`src/tools/`)
+- **GoalAnalyzerTool**: Extracts structured goals from natural language
+- **MealPlannerTool**: Generates personalized meal plans
+- **WorkoutRecommenderTool**: Creates fitness routines
+- **ProgressTrackerTool**: Logs and tracks user progress
+- **CheckinSchedulerTool**: Manages recurring check-ins
 
-## 🔧 Tools
+#### 3. **Context Management** (`src/context.py`)
+- `UserSessionContext`: Central data model for user state
+- Structured models for goals, meal plans, workout plans
+- Progress tracking and handoff logging
 
-| Tool Name | Purpose |
-| :---- | :---- |
-| GoalAnalyzerTool | Converts user goals into structured format using input/output guardrails |
-| MealPlannerTool | Async tool to suggest 7-day meal plan honoring dietary preferences |
-| WorkoutRecommenderTool | Suggests workout plan based on parsed goals and experience |
-| CheckinSchedulerTool | Schedules recurring weekly progress checks |
-| ProgressTrackerTool | Accepts updates, tracks user progress, modifies session context |
+#### 4. **Guardrails** (`src/guardrails/`)
+- Input validation for user goals and preferences
+- Output validation for tool responses
+- Safety checks for health-related recommendations
 
----
+### Data Models
 
-## 🤝 Handoffs (Specialized Agents)
+#### Goal Structure
+```python
+class Goal(BaseModel):
+    action: Literal["lose", "gain", "maintain"]
+    quantity: float
+    unit: Literal["kg", "lbs", "%"]
+    duration: int
+    timeframe_unit: Literal["days", "weeks", "months"]
+```
 
-Specialized agents receive control through handoff() based on user input.
+#### Meal Planning
+```python
+class MealDay(BaseModel):
+    day: int
+    meals: List[Meal]  # Breakfast, lunch, dinner, snacks
+```
 
-| Agent Name | Trigger Condition |
-| :---- | :---- |
-| EscalationAgent | User wants to speak to a human coach |
-| NutritionExpertAgent | Complex dietary needs like diabetes or allergies |
-| InjurySupportAgent | Physical limitations or injury-specific workouts |
+#### Progress Tracking
+```python
+class ProgressUpdate(BaseModel):
+    date: str
+    weight: Optional[float]
+    workouts_completed: Optional[int]
+    meals_followed: Optional[int]
+    notes: Optional[str]
+    mood: Optional[str]
+    sleep_hours: Optional[float]
+    water_intake: Optional[float]
+```
 
-Each agent should:
+## 🔄 Agent Handoff Flow
 
-* Be declared and passed in the handoffs parameter of the main agent
+The system intelligently routes users to specialized agents based on their needs:
 
-* Optionally implement on\_handoff() for logging or initialization
+1. **Main Agent** → **Nutrition Expert**: Complex dietary requirements
+2. **Main Agent** → **Injury Support**: Physical limitations or injuries
+3. **Main Agent** → **Escalation Agent**: Human coach requests
 
----
+Each handoff preserves user context and conversation history.
 
-## 📦 Context Management
-
-Define a shared context class:
-
-**class** UserSessionContext(BaseModel):  
-    name: str  
-    uid: int  
-    goal: Optional\[dict\] \= None  
-    diet\_preferences: Optional\[str\] \= None  
-    workout\_plan: Optional\[dict\] \= None  
-    meal\_plan: Optional\[List\[str\]\] \= None  
-    injury\_notes: Optional\[str\] \= None  
-    handoff\_logs: List\[str\] \= \[\]  
-    progress\_logs: List\[Dict\[str, str\]\] \= \[\]
-
-Used by all tools, hooks, and agents as RunContextWrapper\[UserSessionContext\].
-
----
-
-## 🔒 Guardrails
+## 🛡️ Safety & Validation
 
 ### Input Guardrails
-
-* Validate goal input format: quantity, metric, duration (e.g. “lose 5kg in 2 months”)
-
-* Ensure valid dietary or injury-related inputs
-
-* Block unsupported or incomplete entries
+- Goal format validation (quantity, metric, duration)
+- Dietary preference validation
+- Injury description validation
 
 ### Output Guardrails
+- Structured JSON responses from tools
+- Pydantic model validation
+- Safety checks for health recommendations
 
-* Ensure tools return structured JSON or Pydantic models
+## 📊 Monitoring & Logging
 
-* Useful for validating and parsing agent responses
+### Lifecycle Hooks
+- Agent start/end events
+- Tool invocation tracking
+- Handoff logging
+- User interaction metrics
 
----
+### Progress Tracking
+- Weight and fitness metrics
+- Meal adherence
+- Workout completion
+- Mood and energy levels
 
-## 🔄 Streaming
+## 🚀 Development
 
-Use Runner.stream(...) to stream real-time responses.
+### Adding New Tools
+1. Create tool in `src/tools/`
+2. Implement async `run()` method
+3. Add to agent tool list
+4. Update guardrails if needed
 
-**async** **for** step **in** Runner.stream(starting\_agent\=agent, input\="Help me lose weight", context\=user\_context):  
-    print(step.pretty\_output)
+### Adding New Agents
+1. Create agent in `src/my_agents/`
+2. Define handoff conditions
+3. Add to main agent handoffs list
+4. Implement `on_handoff()` if needed
 
-Stream full conversation flow including tool calls and tool responses.
+### Running Tests
+```bash
+# Add test commands here when implemented
+```
 
----
+## 🤝 Contributing
 
-## 
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## 
+## 📝 License
 
-## 🔁 Optional Lifecycle Hooks
+[Add your license information here]
 
-Use RunHooks or AgentHooks to log or trigger behaviors:
+## 🆘 Support
 
-**RunHooks** (global events):
+For issues and questions:
+- Create an issue in the repository
+- Check the documentation
+- Review the assignment requirements in `ASSIGNMENT.md`
 
-* on\_agent\_start, on\_agent\_end
+## 🔮 Future Enhancements
 
-* on\_tool\_start, on\_tool\_end
-
-* on\_handoff
-
-**AgentHooks** (agent-specific):
-
-* on\_start, on\_end
-
-* on\_tool\_start, on\_tool\_end
-
-* on\_handoff
-
-Use cases:
-
-* Logging tool invocations
-
-* Tracking number of user interactions
-
-* Debugging handoff behavior
-
----
-
-## 🧭 User Journey (Example Flow)
-
-User: I want to lose 5kg in 2 months  
-\-\> GoalAnalyzerTool extracts structured goal
-
-User: I’m vegetarian  
-\-\> MealPlannerTool provides meal plan (streamed)
-
-User: I have knee pain  
-\-\> Handoff to InjurySupportAgent
-
-User: I’m also diabetic  
-\-\> Handoff to NutritionExpertAgent
-
-User: I want to talk to a real trainer  
-\-\> EscalationAgent handoff is triggered
+- [ ] Integration with fitness trackers
+- [ ] Calendar integration for meal/workout scheduling
+- [ ] Social features for accountability
+- [ ] Mobile app interface
+- [ ] Advanced analytics dashboard
+- [ ] Integration with health professionals
 
 ---
 
-## 📁 Suggested Folder Structure
-
-health\_wellness\_agent/  
-├── main.py  
-├── agent.py  
-├── context.py  
-├── guardrails.py  
-├── hooks.py  
-├── tools/  
-│   ├── goal\_analyzer.py  
-│   ├── meal\_planner.py  
-│   ├── workout\_recommender.py  
-│   ├── scheduler.py  
-│   ├── tracker.py  
-├── agents/  
-│   ├── escalation\_agent.py  
-│   ├── nutrition\_expert\_agent.py  
-│   └── injury\_support\_agent.py  
-├── utils/  
-│   └── streaming.py  
-└── README.md
-
----
-
-## 📥 Submission Requirements
-
-* Functional agent with all tools
-
-* Use of context, handoffs, and guardrails
-
-* Real-time streaming with Runner.stream()
-
-* Modularized code with proper structure
-
-* CLI or frontend UI (e.g., Streamlit) (**Optional**)
-
----
-
-## 📊 Evaluation Criteria (100 Points)
-
-| Category | Points |
-| :---- | :---- |
-| Tool Design \+ Async Integration | 20 |
-| Context & State Management | 10 |
-| Input/Output Guardrails | 15 |
-| Handoff Logic | 15 |
-| Real-time Streaming | 15 |
-| Code Structure & Logging | 10 |
-| Multi-turn Interaction | 15 |
-| (Optional) Lifecycle Hook Usage | \+10 |
-
----
-
-## 💡 Bonus Ideas
-
-* Streamlit dashboard
-
-* User progress PDF report
-
-* Integration with a database or file storage
-
----
-
-## 🚀 Getting Started
-
-1. Install SDK: pip install openai-agents
-
-2. Start building from main.py
-
-3. Use [docs](https://openai.github.io/openai-agents-python) as reference
-
----
-
-**End of Assignment Document**
+**Built with ❤️ using OpenAI Agents SDK** 
