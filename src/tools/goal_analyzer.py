@@ -18,7 +18,7 @@ goal_analyzer_agent = Agent(
 
 
 goal_analyzer = goal_analyzer_agent.as_tool(
-    tool_name="Goal Analyzer",
+    tool_name="goal_analyzer",
     tool_description="""
 Analyzes and converts raw user goal input into a structured Goal object.
 
