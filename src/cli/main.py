@@ -1,5 +1,3 @@
-
-
 import asyncio
 import time
 from uuid import uuid4
@@ -7,6 +5,7 @@ from colorama import Back, Fore, Style
 
 from src.agent import HealthWellnessPlannerAgent
 from src.context import UserSessionContext
+import src.config
 
 def welcome():
     print()
@@ -26,11 +25,8 @@ def exit():
 async def main():
     welcome()
     
-    name = input("Please enter your name: ")
-    
+    name = input("Please enter your name: ")    
     user = UserSessionContext(name=name, uid=str(uuid4()))
-    print(user)
-    
     agent = HealthWellnessPlannerAgent(user)
     
     while True:
@@ -40,13 +36,8 @@ async def main():
             break
         
         result = agent.streaming(prompt=user_input)  
-        # result = "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptas deleniti earum, eaque reiciendis ut fugiat. Repudiandae, ipsum debitis? Cumque, quas nostrum impedit iste pariatur aperiam est veritatis explicabo nam tenetur? Atque labore debitis pariatur dicta vitae eos odio. Quasi ad beatae possimus tempore nesciunt perferendis quaerat officiis eveniet aliquam odio?"
-        
-        print(Fore.MAGENTA + Style.BRIGHT + "Agent: " + Style.RESET_ALL, end='', flush=True)
-        # for chunk in result.split(' '):
-        #     print(chunk, end=' ', flush=True)
-        #     time.sleep(0.1)
-        
+
+        print(Fore.MAGENTA + Style.BRIGHT + "Agent: " + Style.RESET_ALL, end='', flush=True)        
         async for chunk in result.chunks():
             print(chunk, end='', flush=True)
         
@@ -54,6 +45,8 @@ async def main():
         time.sleep(1)
         
     
+    # Print session summary with logfire logging
+    agent.hooks.print_session_summary()
     exit()
 
 
