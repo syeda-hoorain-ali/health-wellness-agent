@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Any, Dict, Literal
 from agents import RunContextWrapper, function_tool
 from src.context import UserSessionContext
@@ -90,4 +91,42 @@ async def read_context_data(
             "progress_logs": [log.model_dump() for log in ctx.context.progress_logs],
             "handoff_logs": ctx.context.handoff_logs,
             "message": "Retrieved all available context data"
-        } 
+        }
+
+@function_tool(strict_mode=False)
+async def get_current_time(
+    ctx: RunContextWrapper[UserSessionContext],
+) -> Dict[str, Any]:
+    """
+    Get current time and date information.
+    
+    This tool provides current time information that agents can use to avoid asking users
+    for basic date/time information. Use this when you need to know the current date,
+    time, year, month, day, or weekday for scheduling or planning purposes.
+    
+    Returns:
+        Dict[str, Any]: Current time information including:
+        - current_datetime: Full ISO datetime string
+        - current_date: Date in YYYY-MM-DD format
+        - current_time: Time in HH:MM:SS format
+        - current_year: Current year
+        - current_month: Current month (1-12)
+        - current_day: Current day of month
+        - current_weekday: Day name (Monday, Tuesday, etc.)
+        - current_weekday_number: Day number (0=Monday, 6=Sunday)
+        - timezone: Timezone information
+    """
+    
+    now = datetime.now(timezone.utc)
+    
+    return {
+        "current_datetime": now.isoformat(),
+        "current_date": now.strftime("%Y-%m-%d"),
+        "current_time": now.strftime("%H:%M:%S"),
+        "current_year": now.year,
+        "current_month": now.month,
+        "current_day": now.day,
+        "current_weekday": now.strftime("%A"),
+        "current_weekday_number": now.weekday(),  # 0=Monday, 6=Sunday
+        "timezone": "UTC"
+    }

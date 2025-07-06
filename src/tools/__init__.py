@@ -1,4 +1,4 @@
-from .common_tools import read_context_data
+from .common_tools import read_context_data, get_current_time
 from .escalator import escalate_to_human_coach
 from .goal_analyzer import goal_analyzer
 from .injury_tools import add_injury_note
@@ -13,6 +13,7 @@ __all__ = [
     "add_injury_note",
     "escalate_to_human_coach",
     "goal_analyzer",
+    "get_current_time",
     "meal_planner",
     "medical_meal_planner",
     "read_context_data",
@@ -21,4 +22,3 @@ __all__ = [
     "progress_tracker",
     "workout_recommender",
 ]
-

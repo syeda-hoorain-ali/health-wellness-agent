@@ -6,7 +6,7 @@ from typing import List
 
 from src.context import UserSessionContext
 from src.guardrails import injury_input_guardrail, injury_output_guardrail
-from src.tools import add_injury_note, read_context_data, workout_recommender
+from src.tools import add_injury_note, read_context_data, workout_recommender, get_current_time
 
 
 class InjuryAdaptationOutput(BaseModel):
@@ -46,7 +46,7 @@ injury_support_agent = Agent[UserSessionContext](
     Be empathetic and supportive while maintaining focus on helping them stay active safely.
     """),
     model="gemini-2.0-flash",
-    tools=[add_injury_note, read_context_data, workout_recommender],
+    tools=[add_injury_note, read_context_data, workout_recommender, get_current_time],
     input_guardrails=[injury_input_guardrail],
     output_guardrails=[injury_output_guardrail],
     handoff_description="Handles injury-related fitness adaptations and safe exercise recommendations"

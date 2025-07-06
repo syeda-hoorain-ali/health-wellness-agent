@@ -4,7 +4,7 @@ from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
 
 from src.context import UserSessionContext
 from src.guardrails import medical_meal_plan_output_guardrail, nutrition_input_guardrail
-from src.tools import meal_planner, medical_meal_planner, progress_tracker
+from src.tools import meal_planner, medical_meal_planner, progress_tracker, get_current_time
 
 def on_nutrition_agent_handoff(ctx: RunContextWrapper[UserSessionContext]):
     # Log the nutrition in context
@@ -41,7 +41,7 @@ nutrition_expert_agent = Agent[UserSessionContext](
     Always prioritize user safety and recommend consulting healthcare providers.
     """),
     model="gemini-2.0-flash",
-    tools=[meal_planner, medical_meal_planner, progress_tracker],
+    tools=[meal_planner, medical_meal_planner, progress_tracker, get_current_time],
     input_guardrails=[nutrition_input_guardrail],
     output_guardrails=[medical_meal_plan_output_guardrail],
     handoff_description="Provides specialized nutrition guidance for medical conditions and dietary restrictions"

@@ -9,7 +9,7 @@ from openai.types.responses import ResponseTextDeltaEvent
 from src.context import UserSessionContext
 from src.hooks import HealthWellnessHooks
 from src.my_agents.main_agent import main_agent
-from guardrails.guardrail_exceptions import handle_guardrail_exception
+from src.guardrails.guardrail_exceptions import handle_guardrail_exception
 import src.config
 
 
@@ -64,43 +64,39 @@ class HealthWellnessPlannerAgent:
         """Process a chat message and return a streaming response with chunks."""
 
         new_history = self.history + [{"role": "user", "content": prompt}]
-        try:
-            result = Runner.run_streamed(
-                starting_agent=self.agent,
-                input=new_history,
-                context=self.user,
-                hooks=self.hooks,
-            )
-            
-            async def chunks() -> AsyncIterator[str]:
+        
+        result = Runner.run_streamed(
+            starting_agent=self.agent,
+            input=new_history,
+            context=self.user,
+            hooks=self.hooks,
+        )
+        
+        async def chunks() -> AsyncIterator[str]:
+            try:
                 async for event in result.stream_events():
                     if isinstance(event, RawResponsesStreamEvent) and isinstance(event.data, ResponseTextDeltaEvent):
                         chunk = event.data.delta
                         yield chunk
-            
-            self.history += result.to_input_list()
-            return Stream(chunks=chunks, final_output=result.final_output)
-            
-        except (InputGuardrailTripwireTriggered, OutputGuardrailTripwireTriggered) as e:
-            agent_name = e.run_data.last_agent.name if e.run_data else self.agent.name
-            
-            response_message = handle_guardrail_exception(
-                exception=e,
-                user_input=prompt,
-                agent_name=agent_name,
-                session_id=self.hooks.session_id,
-                session_duration=round(time.time() - self.hooks.session_start_time, 2),
-                user_name=self.user.name,
-                user_uid=self.user.uid
-            )
-            
-            # Create a simple stream that yields the error message
-            async def error_chunks() -> AsyncIterator[str]:
+                        
+            except (InputGuardrailTripwireTriggered, OutputGuardrailTripwireTriggered) as e:
+                # Handle guardrail exceptions that occur during streaming
+                agent_name = e.run_data.last_agent.name if e.run_data else self.agent.name
+                
+                response_message = handle_guardrail_exception(
+                    exception=e,
+                    user_input=prompt,
+                    agent_name=agent_name,
+                    session_id=self.hooks.session_id,
+                    session_duration=round(time.time() - self.hooks.session_start_time, 2),
+                    user_name=self.user.name,
+                    user_uid=self.user.uid
+                )
+                
+                # Yield the error message as chunks
                 for word in response_message.split(' '):
-                    yield word
-            
-            return Stream(chunks=error_chunks, final_output=response_message)
-
-
-
+                    yield word + ' '
+        
+        self.history += result.to_input_list()
+        return Stream(chunks=chunks, final_output=result.final_output)
 

@@ -34,7 +34,7 @@ def checkin_scheduler_local(
     ctx: RunContextWrapper[UserSessionContext],
     user_id: int,
     frequency: Literal["DAILY", "WEEKLY", "MONTHLY"],
-    start_date: date
+    start_date: Optional[date] = None
 ) -> ScheduleConfirmation:
     """
     Create local iCal file for recurring progress check-ins.
@@ -42,13 +42,18 @@ def checkin_scheduler_local(
     Args:
         user_id: User identifier
         frequency: Recurrence frequency (DAILY, WEEKLY, MONTHLY)
-        start_date: Start date for the recurring events
+        start_date: Start date for the recurring events (optional, defaults to current date)
     
     Returns:
         ScheduleConfirmation with event details and local file path
     """
 
     user = ctx.context
+    
+    # Use current date if no start_date provided
+    if start_date is None:
+        start_date = date.today()
+    
     event_id = str(uuid4())
     next_occurrence = start_date + get_timedelta(frequency)
     
@@ -105,14 +110,14 @@ def authenticate_google():
 def checkin_scheduler_google(
     ctx: RunContextWrapper[UserSessionContext],
     frequency: Literal["DAILY", "WEEKLY", "MONTHLY"],
-    start_date: date
+    start_date: Optional[date] = None
 ):
     """
     Schedule recurring progress check-ins using Google Calendar.
     
     Args:
         frequency: Recurrence frequency (DAILY, WEEKLY, MONTHLY)
-        start_date: Start date for the recurring events
+        start_date: Start date for the recurring events (optional, defaults to current date)
     
     Returns:
         Google Calendar event details with recurrence rules
@@ -124,6 +129,10 @@ def checkin_scheduler_google(
     print("Service", service)
     
     user = ctx.context
+    
+    # Use current date if no start_date provided
+    if start_date is None:
+        start_date = date.today()
     
     start_datetime = datetime.combine(start_date, datetime.min.time())
     end_datetime = start_datetime + timedelta(minutes=30)

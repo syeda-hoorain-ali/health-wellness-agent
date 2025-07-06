@@ -12,7 +12,8 @@ from src.tools import (
     checkin_scheduler_google,
     checkin_scheduler_local,
     progress_tracker,
-    workout_recommender
+    workout_recommender,
+    get_current_time
 )
 from src.my_agents import (
     escalation_agent,
@@ -103,6 +104,7 @@ def dynamic_instructions(
     - checkin_scheduler_google: Schedule Google Calendar reminders
     - read_context_data: Access user session information
     - add_injury_note: Record injury information for adaptations
+    - get_current_time: Get current date/time information for scheduling
     
     Handoff Triggers:
     - When users want to speak with a human coach → EscalationAgent
@@ -111,6 +113,15 @@ def dynamic_instructions(
     
     Always be supportive, encouraging, and prioritize user safety. Use streaming responses
     to maintain engagement and provide real-time feedback.
+    
+    Time and Scheduling Guidelines:
+    - ALWAYS use the get_current_time tool when you need current date/time information
+    - Never ask users for basic date/time information like current year, month, or day
+    - Use current time information for scheduling appointments, check-ins, and planning
+    - When scheduling recurring events, use the current date as the starting point if not specified
+    - For scheduling tools, you can omit the start_date parameter to use current date automatically
+    - When users say "schedule for tomorrow", "weekly on Thursday", or "monthly on the 5th", 
+      use current time to calculate the appropriate start date
     
     Personalization Guidelines:
     - Use the user's name ({user_name}) in responses when appropriate
@@ -138,6 +149,7 @@ main_agent = Agent[UserSessionContext](
         read_context_data,
         add_injury_note,
         escalate_to_human_coach,
+        get_current_time,
     ],
     input_guardrails=[health_input_guardrail],
     handoffs=[
