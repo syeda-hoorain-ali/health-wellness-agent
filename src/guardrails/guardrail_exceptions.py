@@ -28,6 +28,11 @@ def handle_guardrail_exception(exception: Exception, user_input: str, agent_name
         User-friendly message explaining the issue
     """
     
+    print("Hello")
+    print(Fore.RED, f"\n⚠ {type(exception).__name__}: {exception}", Style.RESET_ALL)
+    # print(f"   Context: {json.dumps(context, indent=2)}\n")
+    
+    
     # Log the violation
     violation_log = AgentLog(
         trace_id=session_id,

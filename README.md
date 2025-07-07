@@ -27,14 +27,15 @@ A sophisticated AI-powered health and wellness planning system built with OpenAI
 
 ### Prerequisites
 - Python 3.12 or higher
-- OpenAI API key
+- Gemini API key
+- Logfire API key
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd health-wellness-planner-agent
+   git clone https://github.com/syeda-hoorain-ali/health-wellness-agent
+   cd health-wellness-agent
    ```
 
 2. **Install dependencies**
@@ -49,13 +50,25 @@ A sophisticated AI-powered health and wellness planning system built with OpenAI
 3. **Set up environment variables**
    Create a `.env` file in the project root:
    ```env
-   OPENAI_API_KEY=your_openai_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   LOGFIRE_TOKEN=your_logfire_token_here
    ```
 
 4. **Run the application**
-   ```bash
-   python src/main.py
-   ```
+
+   - CLI Mode:
+      ```bash
+      python -m src.cli.main
+      ```
+   
+   - Chainlit Interface:
+      ```bash
+      # For Windows PowerShell
+      $env:PYTHONPATH="."; chainlit run src/chainlit_ui/main.py -w
+
+      # For Linux/Mac
+      PYTHONPATH=. chainlit run src/chainlit_ui/main.py -w
+      ```
 
 ## 💬 Usage Examples
 
@@ -79,19 +92,26 @@ Agent: I'll hand you over to our nutrition expert who specializes in diabetic me
 
 ## 🏗️ Project Structure
 
-```
+```bash
 health-wellness-planner-agent/
 ├── src/
-│   ├── main.py                 # Main application entry point
 │   ├── agent.py               # Agent wrapper and streaming logic
-│   ├── context.py             # Data models and user session context
 │   ├── config.py              # Configuration settings
+│   ├── context.py             # Data models and user session context
 │   ├── hooks.py               # Lifecycle hooks for logging
+│   │
+│   ├── cli/                   # Command-line interface
+│   │   ├── main.py            # CLI entry point
+│   │
+│   └── chainlit_ui/           # Chainlit user interface
+│   │   ├── main.py            # Chainlit entry point
+│   │
 │   ├── my_agents/             # Specialized agent implementations
 │   │   ├── main_agent.py      # Primary health planner agent
 │   │   ├── nutrition_expert_agent.py
 │   │   ├── injury_support_agent.py
 │   │   └── escalation_agent.py
+│   │
 │   ├── tools/                 # Agent tools for specific tasks
 │   │   ├── goal_analyzer.py   # Goal extraction and validation
 │   │   ├── meal_planner.py    # Meal plan generation
@@ -99,6 +119,7 @@ health-wellness-planner-agent/
 │   │   ├── tracker.py         # Progress tracking
 │   │   ├── scheduler.py       # Check-in scheduling
 │   │   └── escalator.py       # Handoff management
+│   │
 │   └── guardrails/            # Input/output validation
 │       ├── health_guardrail.py
 │       ├── nutrition_guardrail.py
@@ -133,38 +154,6 @@ health-wellness-planner-agent/
 - Input validation for user goals and preferences
 - Output validation for tool responses
 - Safety checks for health-related recommendations
-
-### Data Models
-
-#### Goal Structure
-```python
-class Goal(BaseModel):
-    action: Literal["lose", "gain", "maintain"]
-    quantity: float
-    unit: Literal["kg", "lbs", "%"]
-    duration: int
-    timeframe_unit: Literal["days", "weeks", "months"]
-```
-
-#### Meal Planning
-```python
-class MealDay(BaseModel):
-    day: int
-    meals: List[Meal]  # Breakfast, lunch, dinner, snacks
-```
-
-#### Progress Tracking
-```python
-class ProgressUpdate(BaseModel):
-    date: str
-    weight: Optional[float]
-    workouts_completed: Optional[int]
-    meals_followed: Optional[int]
-    notes: Optional[str]
-    mood: Optional[str]
-    sleep_hours: Optional[float]
-    water_intake: Optional[float]
-```
 
 ## 🔄 Agent Handoff Flow
 
@@ -216,11 +205,6 @@ Each handoff preserves user context and conversation history.
 3. Add to main agent handoffs list
 4. Implement `on_handoff()` if needed
 
-### Running Tests
-```bash
-# Add test commands here when implemented
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -231,7 +215,8 @@ Each handoff preserves user context and conversation history.
 
 ## 📝 License
 
-[Add your license information here]
+This project is licensed under the [MIT License](LICENSE).
+
 
 ## 🆘 Support
 
@@ -245,10 +230,11 @@ For issues and questions:
 - [ ] Integration with fitness trackers
 - [ ] Calendar integration for meal/workout scheduling
 - [ ] Social features for accountability
-- [ ] Mobile app interface
+- [ ] Streamlit app interface
 - [ ] Advanced analytics dashboard
 - [ ] Integration with health professionals
 
 ---
 
 **Built with ❤️ using OpenAI Agents SDK** 
+**by Syeda Hoorain Ali**

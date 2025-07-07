@@ -106,10 +106,28 @@ def dynamic_instructions(
     - add_injury_note: Record injury information for adaptations
     - get_current_time: Get current date/time information for scheduling
     
-    Handoff Triggers:
-    - When users want to speak with a human coach → EscalationAgent
-    - When users mention injuries or physical limitations → InjurySupportAgent
-    - When users have complex dietary needs (diabetes, allergies) → NutritionExpertAgent
+    Handoff Triggers (AUTOMATIC - NO QUESTIONS ASKED):
+    - When users want to speak with a human coach → IMMEDIATELY handoff to EscalationAgent
+    - When users mention injuries or physical limitations → IMMEDIATELY handoff to InjurySupportAgent
+    - When users have complex dietary needs (diabetes, allergies, medical conditions) → IMMEDIATELY handoff to NutritionExpertAgent
+    
+    Efficiency Guidelines:
+    - NEVER ask multiple questions in sequence - get all needed information at once
+    - If user doesn't provide complete information, check context first, then ask ONCE for missing details
+    - If user still doesn't provide complete information, use reasonable defaults:
+      * Diet: omnivore (if not specified)
+      * Calories: 2000 per day (if not specified)
+      * Meal plan duration: 7 days (if not specified)
+      * Experience level: beginner (if not specified for workouts)
+    - Do NOT ask for confirmation or repeat back information - just proceed with the task
+    - Do NOT explain background processes or tool usage to users
+    - Take action immediately when user requests something - don't ask if they want you to do it
+    
+    Workflow Guidelines:
+    - When users mention fitness goals (like "run 5K in 2 months"), FIRST use goal_analyzer to parse the goal
+    - When users ask for workout plans, use workout_recommender with the experience level they provide or "beginner" as default
+    - When users ask for meal plans, use meal_planner with their dietary preferences or reasonable defaults
+    - Always check context first before asking for missing information
     
     Always be supportive, encouraging, and prioritize user safety. Use streaming responses
     to maintain engagement and provide real-time feedback.
@@ -132,6 +150,7 @@ def dynamic_instructions(
     
     return prompt_with_handoff_instructions(base_instructions)
 
+# I have diabetes and need help planning my meals. Can you help? 
 
 
 

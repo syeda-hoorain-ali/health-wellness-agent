@@ -27,26 +27,27 @@ I'm here to help you achieve your fitness and wellness goals. Whether you want t
 I'm your dedicated AI wellness coach ready to support your journey!
 """
     
-    elements = [
-        cl.Text(name=welcome_name, content=welcome_content)
-    ]
-    await cl.Message(content="", elements=elements).send()
+    # elements = [
+    #     cl.Text(name=welcome_name, content=welcome_content)
+    # ]
+    # await cl.Message(content="", elements=elements).send()
 
-    # Ask for user's name in a friendly way
-    res = await cl.AskUserMessage(
-        content="To get started, what's your name? This helps me personalize your experience! 😊"
-    ).send()
+    # # Ask for user's name in a friendly way
+    # res = await cl.AskUserMessage(
+    #     content="To get started, what's your name? This helps me personalize your experience! 😊"
+    # ).send()
     
-    user_name = res.get("output", "Friend") if res else "Friend"    
+    # user_name = res.get("output", "Friend") if res else "Friend"    
+    user_name = "Hoorain"
     user = UserSessionContext(name=user_name, uid=str(uuid4()))
     agent = HealthWellnessPlannerAgent(user)
-    msg = cl.Message(content="")
+    # msg = cl.Message(content="")
     
-    result = agent.streaming(f"Hi! I am {user_name} (answer in max 50 tokens)")
-    async for chunk in result.chunks():
-        await msg.stream_token(chunk)
+    # result = agent.streaming(f"Hi! I am {user_name} (answer in max 50 tokens)")
+    # async for chunk in result.chunks():
+    #     await msg.stream_token(chunk)
     
-    await msg.update()
+    # await msg.update()
     cl.user_session.set("agent", agent)
     
     await cl.ChatSettings([
@@ -75,5 +76,6 @@ async def on_message(message: cl.Message):
         await msg.stream_token(chunk)
     
     await msg.update()
+    print(agent.user)
     cl.user_session.set("agent", agent)
 

@@ -30,10 +30,8 @@ class MedicalMealPlan(BaseModel):
 
 
 # WorkoutPlan model for workout recommendations
-Days = Literal["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday"]
-
 class WorkoutPlan(BaseModel):
-    days: Dict[Days, List[Dict[str, Any]]]  # e.g., {"Monday": [{"exercise": ..., "sets": ..., "reps": ...}], ...}
+    days: Dict[str, List[Dict[str, Any]]]  # e.g., {"Monday": [{"exercise": ..., "sets": ..., "reps": ...}], ...}
 
 
 # ScheduleConfirmation for check-in scheduling
